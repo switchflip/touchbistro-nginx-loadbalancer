@@ -12,14 +12,12 @@
 include_recipe "nginx::source"
 
 template '/etc/nginx/sites-enabled/default' do
-	source 'default.erb'
-	owner 'root'
-  group 'root'
-  mode  '0755'
-  action :create
-  variables({
-     :server1 => node[:upstream]
-  })
+	source    'default.erb'
+	owner     'root'
+  group     'root'
+  mode      '0755'
+  variables :servers => node[:upstream]
+  action    :create
 end
 
 # Creating the ssl directory, cert and key

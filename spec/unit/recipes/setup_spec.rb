@@ -11,7 +11,7 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
       user:  'root',
       group: 'root',
       variables: {
-        :server1 => node[:upstream]
+        :servers => node[:upstream]
       }
     )
   end

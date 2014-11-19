@@ -20,7 +20,7 @@ suites:
   - name: setup
     run_list:
       - touchbistro-nginx-loadbalancer::setup
-    attributes:
+    attributes: 
       upstream:
         server1: 74.125.20.147
         server2: 98.139.183.24
@@ -73,6 +73,3 @@ suites:
         ihVOrDFdby4b7U7mhUDK7zFdXwscIvtrXqMolENr6y0CBYMIHwPxh29Hzb+kiwoi
         MHteIrHXkyluJKUQUGEENUCZyfmtgiHUFkQIk8Ueh8+9L+EdfV8B8A==
         -----END RSA PRIVATE KEY-----
-      test:
-        test: 1
-        test2: 2
