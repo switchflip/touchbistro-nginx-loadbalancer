@@ -18,9 +18,7 @@ template '/etc/nginx/sites-enabled/default' do
   mode  '0755'
   action :create
   variables({
-     :server1 => node[:upstream][:server1],
-     :server2 => node[:upstream][:server2],
-     :server3 => node[:upstream][:server3]
+     :server1 => node[:upstream]
   })
 end
 

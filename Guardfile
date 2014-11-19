@@ -11,12 +11,14 @@
 #  * 'just' rspec: 'rspec'
 guard :rspec, cmd: 'bundle exec rspec' do
   watch(%r{^spec/.+_spec\.rb$})
-  watch(%r{^lib/(.+)\.rb$})      { |m| "spec/lib/#{m[1]}_spec.rb" }
-  watch('spec/spec_helper.rb')   { "spec" }
-  watch('spec/support/(.+).rb$') { "spec" }
-  watch('.kitchen.yml')          { "spec" }
+  watch(%r{^lib/(.+)\.rb$})               { |m| "spec/lib/#{m[1]}_spec.rb" }
+  watch(%r{^recipes/(.+)\.rb$})           { |m| "spec/recipes/#{m[1]}_spec.rb" }
 
-  watch(%r{^recipes/(.+)\.rb$})                  { |m| "spec/recipes/#{m[1]}_spec.rb" }
+  watch(%r{^recipes/(.+)\.rb$})           {"spec"}
+  watch(%r{'spec/support/(.+).rb$'})      {"spec"}
+  watch(%r{^templates/(.+).erb$})         {"spec"}
 
+  watch('.kitchen.yml')                   {"spec"}
+  watch('spec/spec_helper.rb')            {"spec"}
 end
 
