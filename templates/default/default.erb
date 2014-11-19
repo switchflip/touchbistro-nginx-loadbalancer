@@ -1,0 +1,13 @@
+<!-- create loop to setup number of servers based on array -->
+
+upstream backend  {
+  server <%= @server1 %>;
+  server <%= @server2 %>;
+  server <%= @server3 %>;
+}
+
+server {
+        location / {
+          proxy_pass  http://backend;
+       }
+}
