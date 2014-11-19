@@ -17,7 +17,6 @@ template '/etc/nginx/sites-enabled/default' do
   group 'root'
   mode  '0755'
   action :create
-  # pass in an array of servers
   variables({
      :server1 => node[:upstream][:server1],
      :server2 => node[:upstream][:server2],
@@ -25,20 +24,22 @@ template '/etc/nginx/sites-enabled/default' do
   })
 end
 
-
-# figure out best practive on when to put ssl certs
-
 # Creating the ssl directory, cert and key
 # ssl_crt "/shared/ssl/server.crt" do
 #   crt rails_deploy[:ssl_certificate]
 #   key rails_deploy[:ssl_certificate_key]
 # end
 
+# no rails sample application, just nginx
+
+# figure out best practive on when to put ssl certs
+
+# figure out how to get nginx to work on https
 
 # template "/etc/nginx/nginx.conf" do
 #   source "nginx.conf.erb"
 #   mode "0644"
-#   owner "root"
-#   group "root"
+#   owner "nginx"
+#   group "nginx"
 #   # variables :deploy_to => rails_deploy
 # end

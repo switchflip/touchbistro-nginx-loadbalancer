@@ -8,7 +8,7 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
 
   it 'creates a template with these attributes' do
     expect(runner).to create_template('/etc/nginx/sites-enabled/default').with(
-      user: 'root',
+      user:  'root',
       group: 'root',
       variables: {
         :server1 => node[:upstream][:server1],

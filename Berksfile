@@ -1,4 +1,4 @@
-source "https://supermarket.getchef.com"
+source 'https://supermarket.getchef.com'
 
 metadata
 
@@ -8,4 +8,4 @@ cookbook 'build-essential'
 
 cookbook 'nginx',                       github: 'miketheman/nginx'
 cookbook 'tar',                         github: 'gofullstack/tar-cookbook'
-cookbook "ssl-crt",                     github: 'switchflip/ssl-crt-cookbook'
+cookbook 'ssl-crt',                     github: 'switchflip/ssl-crt-cookbook'
