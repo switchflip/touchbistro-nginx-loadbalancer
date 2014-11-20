@@ -5,7 +5,7 @@
 # Copyright (C) 2014
 #
 # All rights reserved - Do Not Redistribute
-#
+
 recipes       = ['nginx::source', 'ssl-crt']
 
 user_account 'nginx' do
@@ -37,11 +37,11 @@ template '/etc/nginx/sites-enabled/default' do
 end
 
 template '/etc/nginx/nginx.conf' do
- source 'nginx.conf.erb'
- owner  'root'
- group  'root'
- mode   '0644'
- variables :user => node[:nginx_user]
+  source 'nginx.conf.erb'
+  owner  'root'
+  group  'root'
+  mode   '0644'
+  variables :user => node[:nginx_user]
 end
 
 service 'nginx' do
