@@ -7,35 +7,64 @@
 # All rights reserved - Do Not Redistribute
 #
 
-# rails_deploy = node[:deploy][node[:touchbistro_rails][:deploy]]
+###########
+# Globals #
+###########
 
-include_recipe "nginx::source"
+delete_files  = ['/etc/init/nginx.conf', '/etc/nginx/nginx.conf']
+recipes       = ['nginx::source', 'ssl-crt']
+templates     = {
+  '/etc/init/nginx.conf'  => 'nginx-init.conf.erb',
+  '/etc/nginx/nginx.conf' => 'nginx.conf.erb'
+}
+
+###########
+# Recipe  #
+###########
+
+user_account 'nginx' do
+  ssh_keygen     true
+  create_group   true
+  ignore_failure true
+end
+
+recipes.each { |r| include_recipe r }
+
+ssl_crt File.join(node[:ssl_crt_directory], node[:domain_name] + '.crt' ) do
+  owner 'nginx'
+  group 'nginx'
+  crt    node[:ssl_certificate]
+  key    node[:ssl_certificate_key]
+end
+
+delete_files.each do |f| 
+  file f do
+    action :delete
+  end
+end
 
 template '/etc/nginx/sites-enabled/default' do
-	source    'default.erb'
-	owner     'root'
-  group     'root'
-  mode      '0755'
+  source    'default.erb'
+  owner     'nginx'
+  group     'nginx'
+  mode      '0744'
   variables :servers => node[:upstream]
   action    :create
 end
 
-# Creating the ssl directory, cert and key
-# ssl_crt "/shared/ssl/server.crt" do
-#   crt rails_deploy[:ssl_certificate]
-#   key rails_deploy[:ssl_certificate_key]
-# end
+templates.each do |t, l|
+  template t do
+    source l
+    owner  'nginx'
+    group  'nginx'
+    mode   '0744'
+    variables :user => node[:nginx_user]
+    action :create
+  end
+end
 
-# no rails sample application, just nginx
-
-# figure out best practive on when to put ssl certs
-
-# figure out how to get nginx to work on https
-
-# template "/etc/nginx/nginx.conf" do
-#   source "nginx.conf.erb"
-#   mode "0644"
-#   owner "nginx"
-#   group "nginx"
-#   # variables :deploy_to => rails_deploy
-# end
+service 'nginx' do
+  provider Chef::Provider::Service::Upstart
+  supports :status => true, :restart => true, :reload => true
+  action   [:enable, :restart]
+end

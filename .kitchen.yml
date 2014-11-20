@@ -20,7 +20,10 @@ suites:
   - name: setup
     run_list:
       - touchbistro-nginx-loadbalancer::setup
-    attributes: 
+    attributes:
+      nginx_user: nginx
+      domain_name: nginx-test
+      ssl_crt_directory: /etc/nginx/ssl
       upstream:
         server1: 74.125.20.147
         server2: 98.139.183.24

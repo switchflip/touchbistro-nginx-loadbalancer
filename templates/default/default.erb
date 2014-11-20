@@ -5,7 +5,7 @@ upstream backend {
 }
 
 server {
-        location / {
-          proxy_pass  http://backend;
-       }
+  location / {
+    proxy_pass  http://backend;
+  }
 }
