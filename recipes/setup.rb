@@ -6,21 +6,7 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-
-###########
-# Globals #
-###########
-
-delete_files  = ['/etc/init/nginx.conf', '/etc/nginx/nginx.conf']
 recipes       = ['nginx::source', 'ssl-crt']
-templates     = {
-  '/etc/init/nginx.conf'  => 'nginx-init.conf.erb',
-  '/etc/nginx/nginx.conf' => 'nginx.conf.erb'
-}
-
-###########
-# Recipe  #
-###########
 
 user_account 'nginx' do
   ssh_keygen     true
@@ -37,30 +23,25 @@ ssl_crt File.join(node[:ssl_crt_directory], node[:domain_name] + '.crt' ) do
   key    node[:ssl_certificate_key]
 end
 
-delete_files.each do |f| 
-  file f do
-    action :delete
-  end
+file '/etc/nginx/nginx.conf' do
+  action :delete
 end
 
 template '/etc/nginx/sites-enabled/default' do
   source    'default.erb'
-  owner     'nginx'
-  group     'nginx'
+  owner     'root'
+  group     'root'
   mode      '0744'
   variables :servers => node[:upstream]
   action    :create
 end
 
-templates.each do |t, l|
-  template t do
-    source l
-    owner  'nginx'
-    group  'nginx'
-    mode   '0744'
-    variables :user => node[:nginx_user]
-    action :create
-  end
+template '/etc/nginx/nginx.conf' do
+ source 'nginx.conf.erb'
+ owner  'root'
+ group  'root'
+ mode   '0644'
+ variables :user => node[:nginx_user]
 end
 
 service 'nginx' do

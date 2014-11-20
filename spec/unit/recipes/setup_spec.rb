@@ -14,36 +14,24 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
     expect(runner).to create_directory node[:ssl_crt_directory]
   end
 
-  it 'deletes files /etc/init/nginx.conf and /etc/nginx/nginx.conf' do
-    ['/etc/init/nginx.conf', '/etc/nginx/nginx.conf'].each do |file|
-      expect(runner).to delete_file(file)
-    end
+  it 'deletes file /etc/nginx/nginx.conf' do
+    expect(runner).to delete_file('/etc/nginx/nginx.conf')
   end
 
   it 'creates a template with these attributes' do
     expect(runner).to create_template('/etc/nginx/sites-enabled/default').with(
-      user:  'nginx',
-      group: 'nginx',
+      user:  'root',
+      group: 'root',
       variables: {
         :servers => node[:upstream]
       }
     )
   end
 
-  it 'create /etc/init/nginx.conf' do
-    expect(runner).to create_template('/etc/init/nginx.conf').with(
-      user:  'nginx',
-      group: 'nginx',
-      variables: {
-        :user => node[:nginx_user]
-      }
-    )
-  end
-
   it 'create nginx.conf template' do
     expect(runner).to create_template('/etc/nginx/nginx.conf').with(
-      user:  'nginx',
-      group: 'nginx',
+      user:  'root',
+      group: 'root',
       variables: {
         :user => node[:nginx_user]
       }
