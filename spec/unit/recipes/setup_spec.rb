@@ -22,6 +22,7 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
     expect(runner).to create_template('/etc/nginx/sites-enabled/default').with(
       user:  'root',
       group: 'root',
+      mode:  '0744',
       variables: {
         :servers => node[:upstream]
       }
@@ -32,6 +33,7 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
     expect(runner).to create_template('/etc/nginx/nginx.conf').with(
       user:  'root',
       group: 'root',
+      mode:  '0744',
       variables: {
         :user => node[:nginx_user]
       }

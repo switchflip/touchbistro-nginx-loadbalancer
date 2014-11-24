@@ -26,8 +26,8 @@ suites:
       ssl_crt_directory: /etc/nginx/ssl
       upstream:
         server1: 74.125.20.147
-        server2: 98.139.183.24
-        server3: 184.26.143.137
+        server2: 106.10.212.24
+        server3: 184.168.47.225
       ssl_certificate: |
         -----BEGIN CERTIFICATE-----
         MIIDBjCCAe4CCQCd3mQzrtFVIzANBgkqhkiG9w0BAQUFADBFMQswCQYDVQQGEwJB

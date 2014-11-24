@@ -40,7 +40,7 @@ template '/etc/nginx/nginx.conf' do
   source 'nginx.conf.erb'
   owner  'root'
   group  'root'
-  mode   '0644'
+  mode   '0744'
   variables :user => node[:nginx_user]
 end
 
