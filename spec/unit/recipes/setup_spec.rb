@@ -40,6 +40,20 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
     )
   end
 
+  it 'create DH params file and sets permissions for root' do
+    expect(runner).to run_bash('create DH param key').with(
+      user:  'root',
+      group: 'root'
+      )
+  end
+
+  it 'sets up OCSP stapling' do
+    expect(runner).to run_bash('setup OCSP stapling').with(
+      user:  'root',
+      group: 'root'
+      )
+  end
+
   it 'enables and restarts nginx' do
     expect(runner).to enable_service('nginx')
     expect(runner).to restart_service('nginx')

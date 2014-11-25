@@ -44,6 +44,20 @@ template '/etc/nginx/nginx.conf' do
   variables :user => node[:nginx_user]
 end
 
+bash 'create DH param key' do
+  cwd   '/etc/nginx/ssl'
+  user  'root'
+  group 'root'
+  code  'openssl dhparam 2048 -out /etc/nginx/ssl/dhparam.pem'
+end
+
+bash 'setup OCSP stapling' do
+  cwd   '/etc/ssl/private'
+  user  'root'
+  group 'root'
+  code  'wget -O - https://www.startssl.com/certs/ca.pem https://www.startssl.com/certs/sub.class1.server.ca.pem | tee -a ca-certs.pem> /dev/null'
+end
+
 service 'nginx' do
   provider Chef::Provider::Service::Upstart
   supports :status => true, :restart => true, :reload => true

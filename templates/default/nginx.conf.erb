@@ -31,12 +31,4 @@ http {
   # Virtual Host Configs
   include              /etc/nginx/conf.d/*.conf;
   include              /etc/nginx/sites-enabled/*;
-
-  # SSL Custom Confs
-  # This will create a cache shared between all worker processes. 
-  # The cache size is specified in bytes (in this example: 20 MB). 
-  # According to the Nginx documentation can 1MB store about 4000 sessions, 
-  # so for this example, we can store about 80000 sessions, and we will store 
-  # them for 10 minutes. If you expect more traffic, increase the number 
-  # accordingly.
 }
