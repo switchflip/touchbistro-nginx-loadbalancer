@@ -4,6 +4,7 @@ set :backend, :exec
 packages       = ['tar', 'vim']
 non_root_users = ['vagrant','nginx']
 ssl_keys       = ['nginx-test.crt', 'nginx-test.key']
+nginx_confs    = ['/etc/nginx/sites-enabled/default', '/etc/nginx/nginx.conf']
 
 non_root_users.each do |u|
   describe user(u) do
@@ -33,7 +34,6 @@ describe file('/etc/nginx') do
   it { should be_owned_by 'root' }
 end
 
-
 describe file('/etc/nginx/ssl') do
   it { should be_directory }
   it { should be_mode 700 }
@@ -48,8 +48,21 @@ ssl_keys.each do |k|
   end
 end
 
+nginx_confs.each do |conf| 
+  describe file conf do
+    it { should be_file }
+    it { should be_mode 744 }
+    it { should be_owned_by 'root' }
+  end
+end
 
-# LAST
+describe file '/etc/nginx/ssl/dhparam.pem' do
+  it { should be_file }
+  it { should be_mode 644 }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+end
+
 describe service('nginx') do
   it { should be_enabled }
   it { should be_running }
