@@ -29,10 +29,8 @@ end
 group :serverspec do
   guard :rspec, cmd: 'SPEC_TYPE="serverspec" bundle exec kitchen verify 1404' do
     
-    watch(%r{^test/.+_spec\.rb$})
-
+    watch(%r{^test/.+_spec\.rb$})           {"spec"}
     watch(%r{'test/support/(.+).rb$'})      {"spec"}
-
     watch('test/*_helper.rb')               {"spec"}
   end
 end
