@@ -7,6 +7,7 @@ version          '0.1.0'
 
 depends 'ohai'
 depends 'user'
+depends 'vim'
 
 depends 'nginx'
 depends 'ssl-crt'

@@ -6,7 +6,7 @@
 #
 # All rights reserved - Do Not Redistribute
 
-recipes       = ['nginx::source', 'ssl-crt']
+recipes       = ['nginx::source', 'ssl-crt', 'vim']
 
 user_account 'nginx' do
   ssh_keygen     true

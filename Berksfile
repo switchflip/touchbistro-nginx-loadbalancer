@@ -4,7 +4,9 @@ metadata
 
 cookbook 'ohai'
 cookbook 'user'
+cookbook 'vim'
 cookbook 'build-essential'
+
 
 cookbook 'nginx',                       github: 'miketheman/nginx'
 cookbook 'tar',                         github: 'gofullstack/tar-cookbook'

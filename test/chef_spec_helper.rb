@@ -1,16 +1,22 @@
-require 'chefspec'
-require 'fauxhai'
-require 'chefspec'
-require 'chefspec/berkshelf'
-require "awesome_print"
-require "rspec/core/shared_context"
-require_relative "./support/chef_spec_initializer.rb"
+module ChefSpecInitializer
+  extend RSpec::Core::SharedContext
 
-AwesomePrint.defaults = {
-  indent: -2
-}
+  let(:runner) { @runner }
+  let(:node)   {@runner.node}
 
-ChefRoot = File.join File.dirname(__FILE__), ".."
+  before do
+    Fauxhai.mock(platform: 'ubuntu', version: '14.04')
+    @runner = ChefSpec::SoloRunner.new do |node|
+      file_path = File.join ChefRoot, ".kitchen.yml"
+      yaml_attributes = YAML.load_file(file_path)['suites'][0]['attributes']
+      yaml_attributes.each do |k, v| 
+        node.set[k.to_sym] = v 
+      end
+
+    end.converge(described_recipe)
+  end
+
+end
 
 RSpec.configure do |config|
   # Specify the path for Chef Solo to find cookbooks (default: [inferred from
@@ -36,4 +42,4 @@ RSpec.configure do |config|
 
 end
 
-at_exit { ChefSpec::Coverage.report! }
+at_exit { ChefSpec::Coverage.report! } 
