@@ -83,7 +83,7 @@ end
 
 describe service('nginx') do
   it { should be_enabled }
-  it { should be_running }
+  it { should be_running.under('upstart') }
 end
 
 describe port(8443) do
