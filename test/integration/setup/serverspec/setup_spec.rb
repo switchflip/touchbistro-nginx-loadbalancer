@@ -1,8 +1,10 @@
 require 'serverspec'
+require 'faraday'
+
 set :backend, :exec
 
 packages       = ['tar', 'vim']
-non_root_users = ['vagrant','nginx']
+non_root_users = ['nginx']
 ssl_keys       = ['nginx-test.crt', 'nginx-test.key']
 nginx_confs    = ['/etc/nginx/sites-enabled/default', '/etc/nginx/nginx.conf']
 
@@ -12,14 +14,6 @@ non_root_users.each do |u|
     it { should belong_to_group u }
     it { should have_home_directory "home/#{u}"}
   end
-end
-
-describe user('root') do
-  it { should exist }
-  it { should belong_to_group 'root' }
-  it { should have_uid 0 }
-  it { should have_home_directory '/root' }
-  it { should have_login_shell '/bin/bash' }
 end
 
 packages.each do |p| 
@@ -76,7 +70,7 @@ end
 
 describe file('/etc/ssl/private/ca-certs.pem') do
   it { should be_file}
-  it { should be_mode '644' }
+  it { should be_mode '600' }
   it { should be_owned_by 'root'}
   it { should be_grouped_into 'root'}
 end
@@ -86,6 +80,17 @@ describe service('nginx') do
   it { should be_running.under('upstart') }
 end
 
-describe port(8443) do
-  it { should_not be_listening }
+describe port(443) do
+  it { should be_listening }
 end
+
+# Test that the content you are receiving is from the upstreams servers
+
+conn = Faraday.new
+
+
+# Change one the upstreams to be a url that doesn't work, and verify you don't get a response
+
+
+
+

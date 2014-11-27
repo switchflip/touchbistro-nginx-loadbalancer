@@ -55,7 +55,10 @@ bash 'setup OCSP stapling' do
   cwd   '/etc/ssl/private'
   user  'root'
   group 'root'
-  code  'wget -O - https://www.startssl.com/certs/ca.pem https://www.startssl.com/certs/sub.class1.server.ca.pem | tee -a ca-certs.pem> /dev/null'
+  code <<-EOH
+    wget -O - https://www.startssl.com/certs/ca.pem https://www.startssl.com/certs/sub.class1.server.ca.pem | tee -a ca-certs.pem> /dev/null
+    chmod 600 ca-certs.pem 
+   EOH
 end
 
 service 'nginx' do

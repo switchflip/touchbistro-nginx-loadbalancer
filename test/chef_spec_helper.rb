@@ -2,7 +2,7 @@ module ChefSpecInitializer
   extend RSpec::Core::SharedContext
 
   let(:runner) { @runner }
-  let(:node)   {@runner.node}
+  let(:node)   { @runner.node }
 
   before do
     Fauxhai.mock(platform: 'ubuntu', version: '14.04')
@@ -12,7 +12,6 @@ module ChefSpecInitializer
       yaml_attributes.each do |k, v| 
         node.set[k.to_sym] = v 
       end
-
     end.converge(described_recipe)
   end
 
