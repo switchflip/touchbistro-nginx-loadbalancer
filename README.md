@@ -25,30 +25,21 @@
 
 # touchbistro-nginx-loadbalancer-cookbook
 
-TODO: Enter the cookbook description here.
+A recipe which setups up a nginx load balancer server on ubuntu 14.04.
 
 ## Supported Platforms
 
-TODO: List your supported platforms.
+Ubuntu 14.04
 
 ## Attributes
 
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['touchbistro-nginx-loadbalancer']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
-  </tr>
-</table>
-
 ## Usage
+
+## Tests
+We are using chefspec and serverspec to test our recipe along with test-kitchen.
+
+* to run integration tests run `bundle exec guard start -g serverspec`
+* to run unit test run `bundle exec guard start -g chefspec`
 
 ### touchbistro-nginx-loadbalancer::default
 
