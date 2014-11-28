@@ -33,7 +33,9 @@ A recipe which setups up a nginx load balancer server on ubuntu 14.04.
 ## Setup
 * `git pull git@github.com:TouchBistro/touchbistro-elasticsearch-cookbook.git`
 * ``bundle install`
+
 ### To setup local VM with your recipe
+
 * Note: You should run these commands in sequential order
 * Create basic VM without recipe:`kitchen create 1404`
 * Run Chef-Solo on your VM with the recipe `kitchen converge 1404`
