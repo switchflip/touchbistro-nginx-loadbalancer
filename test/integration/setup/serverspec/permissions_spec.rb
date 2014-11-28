@@ -1,5 +1,6 @@
 require 'serverspec'
-require 'faraday'
+require 'rest-client'
+require 'net/https'
 
 set :backend, :exec
 
@@ -74,23 +75,3 @@ describe file('/etc/ssl/private/ca-certs.pem') do
   it { should be_owned_by 'root'}
   it { should be_grouped_into 'root'}
 end
-
-describe service('nginx') do
-  it { should be_enabled }
-  it { should be_running.under('upstart') }
-end
-
-describe port(443) do
-  it { should be_listening }
-end
-
-# Test that the content you are receiving is from the upstreams servers
-
-conn = Faraday.new
-
-
-# Change one the upstreams to be a url that doesn't work, and verify you don't get a response
-
-
-
-

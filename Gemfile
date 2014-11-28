@@ -11,4 +11,3 @@ gem 'chefspec'
 gem 'guard'
 gem 'guard-rspec',                     require: false
 gem 'fuubar'
-gem 'faraday',                         '~> 0.9.0'
