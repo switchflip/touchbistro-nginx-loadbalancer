@@ -1,25 +1,41 @@
+require 'sinatra/base'
 require 'serverspec'
 require 'rest-client'
 require 'net/https'
 
+set :backend, :exec
+
 describe service('nginx') do
   it { should be_enabled }
   it { should be_running.under('upstart') }
-
   let :rest_client do
     RestClient::Resource.new('https://127.0.0.1',
       verify_ssl: OpenSSL::SSL::VERIFY_NONE
     )
   end
 
+  # before :each do
+  #   @sinatra_enabled = true
+  # end
+
+  # after :each do
+  #   @sinatra_enabled = true
+  # end
+
+  # get '/' do
+  #   status @sinatra_enabled ? 200 : 500
+  #   body @sinatra_enabled ? "it's sinatra!" : "fubar"
+  # end
+
+
   describe 'when running' do
     it "should respond with 200" do
       resp = rest_client.get
       expect(resp.code).to eq 200
     end
-    it 'should return content from google or yahoo' do
+    it 'should return content from yahoo or amazon' do
       resp = rest_client.get
-      expect(resp.body).to include('google').or include('yahoo')
+      expect(resp.body).to include('facebook').or include('amazon')
     end
   end
 
@@ -66,7 +82,7 @@ describe service('nginx') do
   end
 
   describe 'when master is killed' do
-    it 'should respawn master and worker' do
+    it 'should respawn master and worker and respond with 200' do
       original_pids = `pidof nginx`.split(' ')
       resp = rest_client.get
 
@@ -77,6 +93,6 @@ describe service('nginx') do
       expect(new_pids).not_to eq original_pids
       expect(resp.code).to eq 200
     end
-    
   end
+
 end
