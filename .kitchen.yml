@@ -26,7 +26,7 @@ suites:
       ssl_crt_directory: /etc/nginx/ssl
       upstream:
         server1: amazon.ca:443
-        server2: facebook.com:443
+        server2: shopify.com:443
         # failable_server: 127.0.0.1:4567
       ssl_certificate: |
         -----BEGIN CERTIFICATE-----

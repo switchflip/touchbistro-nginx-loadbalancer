@@ -6,7 +6,7 @@
 #
 # All rights reserved - Do Not Redistribute
 
-recipes       = ['nginx::source', 'ssl-crt', 'vim']
+recipes = ['nginx::source', 'ssl-crt', 'vim']
 
 user_account 'nginx' do
   ssh_keygen     true
@@ -41,7 +41,7 @@ template '/etc/nginx/nginx.conf' do
   owner  'root'
   group  'root'
   mode   '0744'
-  variables :user => node[:nginx_user]
+  variables :user => node[:nginx_user], :worker => node[:cpu][:total]
 end
 
 bash 'create DH param key' do

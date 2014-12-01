@@ -35,7 +35,8 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
       group: 'root',
       mode:  '0744',
       variables: {
-        :user => node[:nginx_user]
+        :user => node[:nginx_user],
+        :worker => node[:cpu][:total]
       }
     )
   end

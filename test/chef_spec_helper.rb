@@ -41,4 +41,4 @@ RSpec.configure do |config|
 
 end
 
-at_exit { ChefSpec::Coverage.report! } 
+at_exit { ChefSpec::Coverage.report! }

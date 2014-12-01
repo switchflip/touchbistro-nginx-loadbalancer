@@ -1,6 +1,5 @@
 user                    <%= @user %>;
-# number of workers changes as number of cpu as a 1 to 1 relationship
-worker_processes        1;
+worker_processes        <%= @worker %>;
 
 error_log               /var/log/nginx/error.log;
 pid                     /var/run/nginx.pid;

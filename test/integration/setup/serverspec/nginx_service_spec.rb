@@ -1,7 +1,25 @@
-require 'sinatra/base'
 require 'serverspec'
 require 'rest-client'
 require 'net/https'
+
+working_backend = "server amazon.ca:443"
+broken_backend  = "server broken.touchbistro.com:443"
+
+def break_backend
+  `sudo service nginx stop`
+  f = File.read("/etc/nginx/nginx.conf")
+  f.gsub(working_backend, broken_backend)
+  
+  `sudo service nginx start`
+end
+
+def unbreak_backend
+  `sudo service nginx stop`
+  f = File.read("/etc/nginx/nginx.conf")
+  f.gsub(broken_backend, working_backend)
+  f.File.save
+  `sudo service nginx start`
+end
 
 set :backend, :exec
 
@@ -14,20 +32,6 @@ describe service('nginx') do
     )
   end
 
-  # before :each do
-  #   @sinatra_enabled = true
-  # end
-
-  # after :each do
-  #   @sinatra_enabled = true
-  # end
-
-  # get '/' do
-  #   status @sinatra_enabled ? 200 : 500
-  #   body @sinatra_enabled ? "it's sinatra!" : "fubar"
-  # end
-
-
   describe 'when running' do
     it "should respond with 200" do
       resp = rest_client.get
@@ -35,7 +39,7 @@ describe service('nginx') do
     end
     it 'should return content from yahoo or amazon' do
       resp = rest_client.get
-      expect(resp.body).to include('facebook').or include('amazon')
+      expect(resp.body).to include('shopify').or include('amazon')
     end
   end
 
@@ -94,5 +98,4 @@ describe service('nginx') do
       expect(resp.code).to eq 200
     end
   end
-
 end
