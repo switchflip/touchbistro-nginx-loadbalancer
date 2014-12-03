@@ -2,35 +2,57 @@ require 'serverspec'
 require 'rest-client'
 require 'net/https'
 
-def break_backend
-  content = File.read('/etc/nginx/sites-enabled/default')
-  new_contents = content.gsub("server amazon.ca:443", "server 127.0.0.1:23234")
-  puts new_contents
-  File.open('/etc/nginx/sites-enabled/default', 'w') {|file| file.puts new_contents }
-end
-
-def unbreak_backend
-  content = File.read('/etc/nginx/sites-enabled/default')
-  new_contents = content.gsub("server 127.0.0.1:23234", "server amazon.ca:443")
-  puts new_contents
-  File.open('/etc/nginx/sites-enabled/default', 'w') {|file| file.puts new_contents }
-end
-
 set :backend, :exec
 
 describe service('nginx') do
-  it { should be_enabled }
-  it { should be_running.under('upstart') }
+  before :each do
+    @conf_path      = '/etc/nginx/sites-enabled/default'
+    @contents       = File.read(@conf_path)
+    @failing_server = "server 127.0.0.1:23234"
+    @working_server = "server amazon.ca:443"
+  end
+
   let :rest_client do
     RestClient::Resource.new('https://127.0.0.1',
       verify_ssl: OpenSSL::SSL::VERIFY_NONE
     ) {|response, request, result| response }
   end
 
+  def gsub_nginx_conf(target, replacement)
+    `sudo service nginx stop`
+    sleep(0.1)
+    new_contents = @contents.gsub(target, replacement)
+    File.open(@conf_path, 'w') {|file| file.puts new_contents }
+    `sudo service nginx start`
+    sleep(0.1)
+  end
+
+  def break_backend
+    gsub_nginx_conf @working_server, @failing_server
+  end
+
+  def unbreak_backend
+    gsub_nginx_conf @failing_server, @working_server
+  end
+
+  def expect_successful_failover
+    4.times do
+      resp = rest_client.get
+      expect(resp.code.to_s[0]).not_to eq "5"
+    end
+  end
+
+  def self.it_should_failover_successfully
+    it("should failover and respond successfully") { expect_successful_failover }
+  end
+
+  it { should be_enabled }
+  it { should be_running.under('upstart') }
+
   describe 'when running' do
     it "should not respond with 500" do
       resp = rest_client.get
-      expect(resp.code).not_to eq 500
+      expect(resp.code.to_s[0]).not_to eq "5"
     end
     it 'should return content from shopify or amazon' do
       resp = rest_client.get
@@ -52,19 +74,19 @@ describe service('nginx') do
     end
   end
   
-  describe 'when one worker is killed' do
-    it 'should respawn and respond without 500' do
+  describe 'when the worker is killed' do
+    it 'should respawn and not respond with a status of 500' do
       pid = `pidof -s nginx`
       `kill #{pid}`
       sleep 0.1
       nginx_pids = `pidof nginx`.split(' ')
       expect(nginx_pids.length).to eq 2 
       resp = rest_client.get
-      expect(resp.code).not_to eq 500
+      expect(resp.code.to_s[0]).not_to eq "5"
     end
   end
 
-  describe 'when both workers are killed' do
+  describe 'when both master and worker are killed' do
     before :each do
       nginx_pids = `pidof nginx`.split(' ')
       nginx_pids.each { |pid| `kill #{pid}` }
@@ -76,7 +98,7 @@ describe service('nginx') do
     end
     it 'should not respond with 500' do
       resp = rest_client.get
-      expect(resp.code).to eq 404
+      expect(resp.code.to_s[0]).not_to eq "5"
     end
   end
 
@@ -90,31 +112,41 @@ describe service('nginx') do
       new_pids = `pidof nginx`.split(' ')
       expect(new_pids.length).to eq 2
       expect(new_pids).not_to eq original_pids
-      expect(resp.code).not_to eq 500
-    end
-  end
-
-  describe 'when one backend server is killed' do
-    before :each do
-      `sudo service nginx stop`
-      sleep(0.1)
-      break_backend
-      `sudo service nginx start`
-      sleep(0.1)
-    end
-
-    after :each do
-      `sudo service nginx stop`
-      sleep(0.1)
-      unbreak_backend
-      `sudo service nginx start`
-      sleep(0.1)
-    end
-
-    it 'should only response from an online backends' do
-      resp = rest_client.get
       expect(resp.code.to_s[0]).not_to eq "5"
     end
   end
 
+  describe 'when one backend server is down' do
+    before(:each) {break_backend}
+    after(:each)  {unbreak_backend}
+
+    it_should_failover_successfully
+  end
+
+  # [500, 503, 504].each do |error_code|
+  #   describe "when one backend server is responding with #{error_code} http errors" do
+
+  #     before :each do
+  #       failing_server = "https://127.0.0.1:3242"
+        
+  #       # TODO: setup a server here, responsds with whatever status code we tell it to
+  #       # 
+  #       # file_name.rb (port, status_code)
+  #       `./sinatra_server.rb 3242 #{status_code}`
+
+
+  #       # test that the server fails as expected
+  #       failing_server_rest_client = RestClient::Resource.new(failing_server,
+  #         verify_ssl: OpenSSL::SSL::VERIFY_NONE
+  #       ) {|response, request, result| response }
+  #       expect(failing_server_rest_client.get.code).to eq error_code
+  #     end
+
+  #     after :each do
+  #       # TODO: tare down the server here
+  #     end
+
+  #     it_should_failover_successfully
+  #   end
+  # end
 end
