@@ -1,10 +1,17 @@
+
 require 'serverspec'
 require 'rest-client'
+require 'webrick/https'
 require 'net/https'
 
 set :backend, :exec
 
 describe service('nginx') do
+
+  before :all do
+    `cd /tmp/busser/suites/serverspec/&&/opt/chef/embedded/bin/bundle install`
+  end
+
   before :each do
     @conf_path      = '/etc/nginx/sites-enabled/default'
     @contents       = File.read(@conf_path)
@@ -12,10 +19,11 @@ describe service('nginx') do
     @working_server = "server amazon.ca:443"
   end
 
-  let :rest_client do
-    RestClient::Resource.new('https://127.0.0.1',
+  def get(server="127.0.0.1")
+    rest_client = RestClient::Resource.new("https://#{server}",
       verify_ssl: OpenSSL::SSL::VERIFY_NONE
     ) {|response, request, result| response }
+    rest_client.get
   end
 
   def gsub_nginx_conf(target, replacement)
@@ -36,8 +44,8 @@ describe service('nginx') do
   end
 
   def expect_successful_failover
-    4.times do
-      resp = rest_client.get
+    6.times do
+      resp = get
       expect(resp.code.to_s[0]).not_to eq "5"
     end
   end
@@ -51,11 +59,11 @@ describe service('nginx') do
 
   describe 'when running' do
     it "should not respond with 500" do
-      resp = rest_client.get
+      resp = get
       expect(resp.code.to_s[0]).not_to eq "5"
     end
     it 'should return content from shopify or amazon' do
-      resp = rest_client.get
+      resp = get
       expect(resp.body).to include('yahoo').or include('google')
     end
   end
@@ -70,7 +78,7 @@ describe service('nginx') do
     it { should be_enabled }
     it { should_not be_running.under('upstart') }
     it "should fail to respond to https requests" do
-      expect{rest_client.get}.to raise_error(Errno::ECONNREFUSED)
+      expect{get}.to raise_error(Errno::ECONNREFUSED)
     end
   end
   
@@ -81,7 +89,7 @@ describe service('nginx') do
       sleep 0.1
       nginx_pids = `pidof nginx`.split(' ')
       expect(nginx_pids.length).to eq 2 
-      resp = rest_client.get
+      resp = get
       expect(resp.code.to_s[0]).not_to eq "5"
     end
   end
@@ -97,7 +105,7 @@ describe service('nginx') do
       expect(new_pids.length).to eq 2
     end
     it 'should not respond with 500' do
-      resp = rest_client.get
+      resp = get
       expect(resp.code.to_s[0]).not_to eq "5"
     end
   end
@@ -105,7 +113,7 @@ describe service('nginx') do
   describe 'when master is killed' do
     it 'should respawn master and worker and not respond with 500' do
       original_pids = `pidof nginx`.split(' ')
-      resp = rest_client.get
+      resp = get
 
       `pkill -f 'nginx: master process'`
       sleep(0.1)
@@ -116,37 +124,43 @@ describe service('nginx') do
     end
   end
 
-  describe 'when one backend server is down' do
+  describe 'when one backend server is not responding' do
     before(:each) {break_backend}
     after(:each)  {unbreak_backend}
 
     it_should_failover_successfully
   end
 
-  # [500, 503, 504].each do |error_code|
-  #   describe "when one backend server is responding with #{error_code} http errors" do
+  [500, 503, 504].each do |error_code|
+    describe "when one backend server is responding with #{error_code} http errors" do
 
-  #     before :each do
-  #       failing_server = "https://127.0.0.1:3242"
-        
-  #       # TODO: setup a server here, responsds with whatever status code we tell it to
-  #       # 
-  #       # file_name.rb (port, status_code)
-  #       `./sinatra_server.rb 3242 #{status_code}`
+      let(:sinatra_server) {"127.0.0.1:3092"}
 
+      after :each do
+        `kill -9 #{@pid}`
+        gsub_nginx_conf "server #{sinatra_server}", @working_server
+        `sudo service nginx stop`
+        sleep(1)
+        `sudo service nginx start`
+        sleep(1)
+      end
 
-  #       # test that the server fails as expected
-  #       failing_server_rest_client = RestClient::Resource.new(failing_server,
-  #         verify_ssl: OpenSSL::SSL::VERIFY_NONE
-  #       ) {|response, request, result| response }
-  #       expect(failing_server_rest_client.get.code).to eq error_code
-  #     end
-
-  #     after :each do
-  #       # TODO: tare down the server here
-  #     end
-
-  #     it_should_failover_successfully
-  #   end
-  # end
+      it "should failover and respond successfully" do
+        # test that the server fails as expected
+        @pid = Process.spawn(
+          "/opt/chef/embedded/bin/ruby /tmp/busser/suites/serverspec/sinatra_server.rb #{error_code}",
+          out: "/dev/null",
+          err: "/dev/null"
+        )
+        gsub_nginx_conf @working_server, "server #{sinatra_server}"
+        `sudo service nginx stop`
+        sleep(1)
+        `sudo service nginx start`
+        sleep(1)
+        expect(get(sinatra_server).code).to eq error_code
+        # test the failover
+        expect_successful_failover
+      end
+    end
+  end
 end

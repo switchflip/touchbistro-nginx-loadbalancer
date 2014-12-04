@@ -11,3 +11,5 @@ gem 'chefspec'
 gem 'guard'
 gem 'guard-rspec',                     require: false
 gem 'fuubar'
+gem 'sinatra',                         require: false
+gem 'mime-types'

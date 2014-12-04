@@ -8,6 +8,8 @@ server {
   location / {
     # change to https for non-terminating ssl connections
     proxy_pass              https://backend;
+    proxy_next_upstream     http_504 http_503 http_502 http_500 error timeout;
+    proxy_next_upstream_tries 0;
     proxy_ssl_session_reuse off;
     proxy_set_header        Host $host;
     proxy_set_header        X-Real-IP $remote_addr;
