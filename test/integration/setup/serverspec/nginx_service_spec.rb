@@ -44,7 +44,7 @@ describe service('nginx') do
   end
 
   def expect_successful_failover
-    6.times do
+    10.times do
       resp = get
       expect(resp.code.to_s[0]).not_to eq "5"
     end
@@ -94,13 +94,13 @@ describe service('nginx') do
     end
   end
 
-  describe 'when both master and worker are killed' do
+  describe 'when master and worker are killed' do
     before :each do
       nginx_pids = `pidof nginx`.split(' ')
       nginx_pids.each { |pid| `kill #{pid}` }
       sleep(0.1)
     end
-    it 'both workers should respawn' do
+    it 'master and worker should respawn' do
       new_pids = `pidof nginx`.split(' ')
       expect(new_pids.length).to eq 2
     end
@@ -158,7 +158,6 @@ describe service('nginx') do
         `sudo service nginx start`
         sleep(1)
         expect(get(sinatra_server).code).to eq error_code
-        # test the failover
         expect_successful_failover
       end
     end

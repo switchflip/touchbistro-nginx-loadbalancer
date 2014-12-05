@@ -32,7 +32,9 @@ template '/etc/nginx/sites-enabled/default' do
   owner     'root'
   group     'root'
   mode      '0744'
-  variables :servers => node[:upstream]
+  variables :servers => node[:upstream], 
+            :directory => node[:ssl_crt_directory],
+            :file_name => node[:domain_name]
   action    :create
 end
 

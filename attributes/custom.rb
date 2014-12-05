@@ -1,6 +1,7 @@
 # === Nginx General Configuration ===
-override['nginx']['version'] = '1.6.1'
-override['nginx']['source']['checksum'] = '943ad757a1c3e8b3df2d5c4ddacc508861922e36fa10ea6f8e3a348fc9abfc1a'
+override['nginx']['version']            = '1.6.2'
+override['nginx']['source']['checksum'] = 'b5608c2959d3e7ad09b20fc8f9e5bd4bc87b3bc8ba5936a513c04ed8f1391a18'
+
 
 # Reload nginx::source attributes with our updated version
 node.from_file(run_context.resolve_attribute('nginx', 'source'))

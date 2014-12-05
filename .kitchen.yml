@@ -27,7 +27,6 @@ suites:
       upstream:
         server1: yahoo.com:443
         server2: amazon.ca:443
-        # failable_server: 127.0.0.1:4567
       ssl_certificate: |
         -----BEGIN CERTIFICATE-----
         MIIDBjCCAe4CCQCd3mQzrtFVIzANBgkqhkiG9w0BAQUFADBFMQswCQYDVQQGEwJB
