@@ -6,7 +6,15 @@
 #
 # All rights reserved - Do Not Redistribute
 
-recipes = ['nginx::source', 'ssl-crt', 'vim']
+packages = [
+  'build-essential',
+  'htop',
+  'vim'
+]
+
+packages.each { |p| package p }
+
+recipes = ['nginx::source', 'ssl-crt']
 
 user_account 'nginx' do
   ssh_keygen     true
