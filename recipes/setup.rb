@@ -6,6 +6,9 @@
 #
 # All rights reserved - Do Not Redistribute
 
+loadbalancer_node = node[:touchbistro_nginx_loadbalancer]
+deploy = node[:deploy][loadbalancer_node[:deploy]]
+
 packages = [
   'build-essential',
   'htop',
@@ -24,11 +27,11 @@ end
 
 recipes.each { |r| include_recipe r }
 
-ssl_crt File.join(node[:ssl_crt_directory], node[:domain_name] + '.crt' ) do
+ssl_crt File.join(loadbalancer_node[:ssl_crt_directory], "#{loadbalancer_node[:domain_name]}.crt" ) do
   owner 'nginx'
   group 'nginx'
-  crt    node[:ssl_certificate]
-  key    node[:ssl_certificate_key]
+  crt    deploy[:ssl_certificate]
+  key    deploy[:ssl_certificate_key]
 end
 
 file '/etc/nginx/nginx.conf' do
@@ -40,9 +43,9 @@ template '/etc/nginx/sites-enabled/default' do
   owner     'root'
   group     'root'
   mode      '0744'
-  variables :servers => node[:upstream], 
-            :directory => node[:ssl_crt_directory],
-            :file_name => node[:domain_name]
+  variables :servers => loadbalancer_node[:upstream], 
+            :directory => loadbalancer_node[:ssl_crt_directory],
+            :file_name => loadbalancer_node[:domain_name]
   action    :create
 end
 
@@ -51,7 +54,7 @@ template '/etc/nginx/nginx.conf' do
   owner  'root'
   group  'root'
   mode   '0744'
-  variables :user => node[:nginx_user], :worker => node[:cpu][:total]
+  variables :user => loadbalancer_node[:nginx_user], :worker => node[:cpu][:total]
 end
 
 bash 'create DH param key' do

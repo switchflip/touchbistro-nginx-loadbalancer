@@ -11,7 +11,9 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
   end
 
   it 'creates ssl directory' do
-    expect(runner).to create_directory node[:ssl_crt_directory]
+    expect(runner).to create_directory(
+      node[:touchbistro_nginx_loadbalancer][:ssl_crt_directory]
+    )
   end
 
   it 'deletes file /etc/nginx/nginx.conf' do
@@ -24,7 +26,7 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
       group: 'root',
       mode:  '0744',
       variables: {
-        :servers => node[:upstream]
+        :servers => node[:touchbistro_nginx_loadbalancer][:upstream]
       }
     )
   end
@@ -35,7 +37,7 @@ describe 'touchbistro-nginx-loadbalancer::setup' do
       group: 'root',
       mode:  '0744',
       variables: {
-        :user => node[:nginx_user],
+        :user => node[:touchbistro_nginx_loadbalancer][:nginx_user],
         :worker => node[:cpu][:total]
       }
     )

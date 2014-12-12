@@ -17,3 +17,6 @@ normal['nginx']['source']['modules']          = [
   'nginx::http_ssl_module',
   'nginx::http_spdy_module'
 ]
+
+default['touchbistro_nginx_loadbalancer']['nginx_user']        = "nginx"
+default['touchbistro_nginx_loadbalancer']['ssl_crt_directory'] = "/etc/nginx/ssl"
