@@ -20,6 +20,7 @@ suites:
   - name: setup
     run_list:
       - touchbistro-nginx-loadbalancer::setup
+      - touchbistro-nginx-loadbalancer::deploy
     attributes:
       touchbistro_nginx_loadbalancer:
         deploy: rails_test_application

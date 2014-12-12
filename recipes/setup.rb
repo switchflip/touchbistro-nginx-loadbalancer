@@ -41,17 +41,6 @@ file '/etc/nginx/nginx.conf' do
   action :delete
 end
 
-template '/etc/nginx/sites-enabled/default' do
-  source    'default.erb'
-  owner     'root'
-  group     'root'
-  mode      '0744'
-  variables :servers => loadbalancer_node[:upstream], 
-            :directory => loadbalancer_node[:ssl_crt_directory],
-            :file_name => loadbalancer_node[:domain_name]
-  action    :create
-end
-
 template '/etc/nginx/nginx.conf' do
   source 'nginx.conf.erb'
   owner  'root'
@@ -75,10 +64,4 @@ bash 'setup OCSP stapling' do
     wget -O - https://www.startssl.com/certs/ca.pem https://www.startssl.com/certs/sub.class1.server.ca.pem | tee -a ca-certs.pem> /dev/null
     chmod 600 ca-certs.pem 
    EOH
-end
-
-service 'nginx' do
-  provider Chef::Provider::Service::Upstart
-  supports :status => true, :restart => true, :reload => true
-  action   [:enable, :restart]
 end
