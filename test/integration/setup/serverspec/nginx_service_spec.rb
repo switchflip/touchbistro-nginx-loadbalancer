@@ -26,6 +26,13 @@ describe service('nginx') do
     rest_client.get
   end
 
+  def http_get(server="127.0.0.1")
+    rest_client = RestClient::Resource.new(
+      "http://#{server}"
+    ) {|response, request, result| response }
+    rest_client.get
+  end
+
   def gsub_nginx_conf(target, replacement)
     `sudo service nginx stop`
     sleep(0.1)
@@ -59,8 +66,10 @@ describe service('nginx') do
 
   describe 'when running' do
     it "should not respond with 500" do
-      resp = get
+      resp      = get
+      resp_http = http_get
       expect(resp.code.to_s[0]).not_to eq "5"
+      expect(resp_http.to_s[0]).not_to eq "5"
     end
     it 'should return content from shopify or amazon' do
       resp = get
