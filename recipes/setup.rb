@@ -10,9 +10,12 @@ loadbalancer_node = node[:touchbistro_nginx_loadbalancer]
 deploy = node[:deploy][loadbalancer_node[:deploy]]
 
 packages = [
-  'build-essential',
-  'htop',
-  'vim'
+  "build-essential",
+  "htop",
+  "ncdu",
+  "vim",
+  "language-pack-en",
+  "mosh"
 ]
 
 packages.each { |p| package p }
