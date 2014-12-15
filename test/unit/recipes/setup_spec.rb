@@ -1,6 +1,14 @@
 require_relative '../../spec_helper'
 
 describe 'touchbistro-nginx-loadbalancer::setup' do
+  
+  packages = %w(build-essential htop ncdu vim language-pack-en mosh)
+
+  packages.each do |p|
+    it 'installs a package with the default action' do
+      expect(runner).to install_package("#{p}")
+    end
+  end
 
   it 'includes nginx recipe' do
     expect(runner).to include_recipe('nginx::source')
