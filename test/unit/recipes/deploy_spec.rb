@@ -2,6 +2,7 @@ require_relative '../../spec_helper'
 
 describe 'touchbistro-nginx-loadbalancer::deploy' do
 
+
   it 'creates a template with these attributes' do
     expect(runner).to create_template('/etc/nginx/sites-enabled/default').with(
       user:  'root',

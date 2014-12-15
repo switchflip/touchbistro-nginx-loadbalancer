@@ -65,7 +65,7 @@ describe service('nginx') do
   it { should be_running.under('upstart') }
 
   describe 'when running' do
-    it "should not respond with 500" do
+    it "should not respond with 500 over http or https" do
       resp      = get
       resp_http = http_get
       expect(resp.code.to_s[0]).not_to eq "5"
