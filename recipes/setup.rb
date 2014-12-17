@@ -9,6 +9,10 @@
 loadbalancer_node = node[:touchbistro_nginx_loadbalancer]
 deploy = node[:deploy][loadbalancer_node[:deploy]]
 
+
+root  = loadbalancer_node[:ocsp_urls][:root]
+inter = loadbalancer_node[:ocsp_urls][:intermediate]
+
 packages = [
   "build-essential",
   "htop",
@@ -61,7 +65,7 @@ bash 'setup OCSP stapling' do
   user  'root'
   group 'root'
   code <<-EOH
-    wget -O - https://www.startssl.com/certs/ca.pem https://www.startssl.com/certs/sub.class1.server.ca.pem | tee -a ca-certs.pem> /dev/null
+    wget -O - #{root} #{inter} | tee -a ca-certs.pem> /dev/null
     chmod 600 ca-certs.pem 
    EOH
 end
