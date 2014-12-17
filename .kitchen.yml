@@ -25,6 +25,9 @@ suites:
       touchbistro_nginx_loadbalancer:
         deploy: rails_test_application
         domain_name: nginx-test
+        ocsp_urls:
+          root: http://www.geotrust.com/resources/root_certificates/certificates/Equifax_Secure_Certificate_Authority.cer
+          intermediate: https://knowledge.rapidssl.com/library/VERISIGN/ALL_OTHER/David%20A./Rapidssl/Secondary%20Intermediate.txt
         upstream:
           server1: yahoo.com:443
           server2: amazon.ca:443
