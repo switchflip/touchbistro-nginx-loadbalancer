@@ -19,7 +19,8 @@ packages = [
   "ncdu",
   "vim",
   "language-pack-en",
-  "mosh"
+  "mosh",
+  "logrotate"
 ]
 
 packages.each { |p| package p }
@@ -68,4 +69,14 @@ bash 'setup OCSP stapling' do
     wget -O - #{root} #{inter} | tee -a ca-certs.pem> /dev/null
     chmod 600 ca-certs.pem 
    EOH
+end
+
+logrotate_app "nginx" do
+  path "/var/log/nginx/error.log"
+  frequency "daily"
+  rotate 30
+  create "644 root root"
+  postrotate <<-EOF
+     [ -f /var/run/nginx.pid ] && kill -USR1 `cat /var/run/nginx.pid`
+  EOF
 end

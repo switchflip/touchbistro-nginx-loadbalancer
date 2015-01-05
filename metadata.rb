@@ -12,3 +12,4 @@ depends 'build-essential'
 
 depends 'nginx'
 depends 'ssl-crt'
+depends 'logrotate'
