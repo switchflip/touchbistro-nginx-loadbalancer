@@ -38,7 +38,7 @@ A recipe which setups up a nginx load balancer server on ubuntu 14.04.
 * Ubuntu 14.04
 
 ## Setup
-* `git pull git@github.com:TouchBistro/touchbistro-elasticsearch-cookbook.git`
+* `git pull git@github.com:TouchBistro/touchbistro-nginx-loadbalancer-cookbook.git`
 * ``bundle install`
 
 ### To setup local VM with your recipe
