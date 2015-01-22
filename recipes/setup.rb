@@ -75,6 +75,7 @@ logrotate_app "nginx" do
   path "/var/log/nginx/error.log"
   frequency "daily"
   rotate 30
+  maxsize 52428800
   create "644 root root"
   postrotate <<-EOF
      [ -f /var/run/nginx.pid ] && kill -USR1 `cat /var/run/nginx.pid`
