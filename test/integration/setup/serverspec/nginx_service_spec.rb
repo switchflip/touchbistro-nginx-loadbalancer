@@ -71,7 +71,7 @@ describe service('nginx') do
       expect(resp.code.to_s[0]).not_to eq "5"
       expect(resp_http.to_s[0]).not_to eq "5"
     end
-    it 'should return content from shopify or amazon' do
+    it 'should return content from yahoo or amazon' do
       resp = get
       expect(resp.body).to include('yahoo').or include('google')
     end
