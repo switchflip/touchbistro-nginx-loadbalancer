@@ -8,8 +8,6 @@
 
 loadbalancer_node = node[:touchbistro_nginx_loadbalancer]
 deploy = node[:deploy][loadbalancer_node[:deploy]]
-
-
 root  = loadbalancer_node[:ocsp_urls][:root]
 inter = loadbalancer_node[:ocsp_urls][:intermediate]
 
@@ -20,7 +18,8 @@ packages = [
   "vim",
   "language-pack-en",
   "mosh",
-  "logrotate"
+  "logrotate",
+  "apt"
 ]
 
 packages.each { |p| package p }
@@ -80,4 +79,9 @@ logrotate_app "nginx" do
   postrotate <<-EOF
      [ -f /var/run/nginx.pid ] && kill -USR1 `cat /var/run/nginx.pid`
   EOF
+end
+
+# NewRelic Sysmond
+if node[:touchbistro_nginx_loadbalancer][:enable_newrelic_sysmond]
+  include_recipe "newrelic-sysmond"
 end
