@@ -23,4 +23,4 @@ deployment_name = node[:touchbistro_nginx_loadbalancer][:deploy]
 key             = node[:custom_env][deployment_name][:NEW_RELIC_LICENSE_KEY]
 
 normal["touchbsistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true
-normal["new_relic"]["license_key"]                                   = key
+default["newrelic-sysmond"]["license_key"]                           = key
