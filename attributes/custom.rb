@@ -17,3 +17,10 @@ normal['nginx']['source']['modules']          = [
 
 default['touchbistro_nginx_loadbalancer']['nginx_user']        = "nginx"
 default['touchbistro_nginx_loadbalancer']['ssl_crt_directory'] = "/etc/nginx/ssl"
+
+# New Relic System Monitoring Required Attributes
+deployment_name = node[:touchbistro_nginx_loadbalancer][:deploy]
+key             = node[:custom_env][deployment_name][:NEW_RELIC_LICENSE_KEY]
+
+normal["touchbsistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true
+default["newrelic-sysmond"]["license_key"]                           = key
