@@ -82,6 +82,6 @@ logrotate_app "nginx" do
 end
 
 # NewRelic Sysmond
-if node[:touchbsistro_nginx_loadbalancer][:enable_newrelic_sysmond]
+if node[:touchbistro_nginx_loadbalancer][:enable_newrelic_sysmond]
   include_recipe "newrelic-sysmond"
 end
