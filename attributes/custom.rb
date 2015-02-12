@@ -25,4 +25,4 @@ key             = node[:custom_env][deployment_name][:NEW_RELIC_LICENSE_KEY]
 normal["newrelic-sysmond"]["license_key"]              = key
 normal["newrelic-sysmond"]["ssl_ca_path"]              = "/etc/ssl/certs/"
 
-normal["touchbsistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true
+normal["touchbistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true
