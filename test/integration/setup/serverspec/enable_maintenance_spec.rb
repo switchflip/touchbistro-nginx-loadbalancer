@@ -10,16 +10,6 @@ describe service('nginx') do
     remove_setup_from_runlist
   end
 
-  before :each do
-    maintenance_page(true)
-    run_deploy
-  end
-
-  after :each do
-    maintenance_page(false)
-    run_deploy
-  end
-
   def remove_setup_from_runlist
     if !File.exist?('/tmp/kitchen/test.json')
       `cp /tmp/kitchen/dna.json /tmp/kitchen/test.json`
@@ -68,7 +58,7 @@ describe service('nginx') do
     rest_client.get
   end
 
-  describe 'maintenance page is enabled' do
+  describe "maintenance page is enabled" do
     it "should not respond with 500 over http or https" do
       maintenance_page(true)
       run_deploy
@@ -82,7 +72,7 @@ describe service('nginx') do
       run_deploy
     end
     
-    it 'should return content from touchbistro maintenance page' do
+    it "should return content from touchbistro's maintenance page" do
       maintenance_page(true)
       run_deploy
 
@@ -94,17 +84,17 @@ describe service('nginx') do
     end
   end
 
-  describe 'maintenance page is disabled' do
+  describe "maintenance page is disabled" do
     it "should not respond with 500 over http or https" do
+      run_setup_and_deploy
+
       resp      = get
       resp_http = http_get
       expect(resp.code.to_s[0]).not_to eq "5"
       expect(resp_http.to_s[0]).not_to eq "5"
     end
     
-    it 'should return content from either Amazon or Yahoo' do
-      run_setup_and_deploy
-
+    it "should return content from either Amazon or Yahoo" do
       resp      = get
       resp_http = http_get
       expect(resp.body).to include('yahoo').or include('google')

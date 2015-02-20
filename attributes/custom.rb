@@ -27,4 +27,4 @@ default["newrelic-sysmond"]["license_key"]              = key
 default["newrelic-sysmond"]["ssl_ca_path"]              = "/etc/ssl/certs/"
 
 # CHANGE back to true before committing
-normal["touchbistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true
+normal["touchbistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = false
