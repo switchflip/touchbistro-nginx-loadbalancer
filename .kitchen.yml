@@ -22,6 +22,7 @@ suites:
       - touchbistro-nginx-loadbalancer::setup
       - touchbistro-nginx-loadbalancer::deploy
     attributes:
+      enable_maintenance_page: false
       touchbistro_nginx_loadbalancer:
         deploy: rails_test_application
         domain_name: nginx-test
