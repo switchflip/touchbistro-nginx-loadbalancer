@@ -25,7 +25,7 @@ if node[:enable_maintenance_page]
               :worker => node[:cpu][:total]
   end
 
-  maintenance_paths.each do |path|
+  maintenance_page_paths.each do |path|
     directory path do
       owner 'root'
       group 'root'
@@ -60,7 +60,7 @@ else
     end
   end
 
-  maintenance_paths.reverse.each do |path|
+  maintenance_page_paths.reverse.each do |path|
     if File.exists?(path)
       directory path do
         action :delete
