@@ -30,6 +30,7 @@ if node[:enable_maintenance_page]
       owner 'root'
       group 'root'
       mode '0755'
+      action :create
     end
   end
 
