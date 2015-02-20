@@ -23,7 +23,8 @@ deployment_name = node[:touchbistro_nginx_loadbalancer][:deploy]
 # key             = node[:custom_env][deployment_name][:NEW_RELIC_LICENSE_KEY]
 key = "test"
 
-normal["newrelic-sysmond"]["license_key"]              = key
-normal["newrelic-sysmond"]["ssl_ca_path"]              = "/etc/ssl/certs/"
+default["newrelic-sysmond"]["license_key"]              = key
+default["newrelic-sysmond"]["ssl_ca_path"]              = "/etc/ssl/certs/"
 
+# CHANGE back to true before merging with master
 normal["touchbistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = false
