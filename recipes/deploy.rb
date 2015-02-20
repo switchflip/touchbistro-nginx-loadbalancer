@@ -1,7 +1,7 @@
 loadbalancer_node = node[:touchbistro_nginx_loadbalancer]
 deploy            = node[:deploy][loadbalancer_node[:deploy]]
 maintenance       = node[:enable_maintenance_page]
-maintenance_paths = %w[
+maintenance_page_paths = %w[
   /var/www 
   /var/www/cloud.touchbistro.com 
   /var/www/cloud.touchbistro.com/public_html/

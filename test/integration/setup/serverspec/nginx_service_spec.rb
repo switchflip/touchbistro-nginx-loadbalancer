@@ -1,4 +1,3 @@
-
 require 'serverspec'
 require 'rest-client'
 require 'webrick/https'
