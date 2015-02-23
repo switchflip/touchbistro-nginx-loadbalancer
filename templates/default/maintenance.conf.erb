@@ -59,9 +59,11 @@ http {
     ssl_stapling_verify        on;
     ssl_trusted_certificate    /etc/ssl/private/ca-certs.pem;
     resolver                   8.8.8.8 8.8.4.4;
-     location / {
-         root   /var/www/cloud.touchbistro.com/public_html;
-         index  index.html index.htm;
+    location / {
+      root   /var/www/cloud.touchbistro.com/public_html;
+      index  index.html index.htm;
+      recursive_error_pages on;
+      error_page 505 504 503 502 501 500 408 404 403 402 401 400 /index.html;
      }
   }
 }

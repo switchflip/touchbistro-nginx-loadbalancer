@@ -22,8 +22,8 @@ default['touchbistro_nginx_loadbalancer']['ssl_crt_directory'] = "/etc/nginx/ssl
 deployment_name = node[:touchbistro_nginx_loadbalancer][:deploy]
 key             = node[:custom_env][deployment_name][:NEW_RELIC_LICENSE_KEY]
 
-# default["newrelic-sysmond"]["license_key"]              = key
+default["newrelic-sysmond"]["license_key"]              = key
 default["newrelic-sysmond"]["ssl_ca_path"]              = "/etc/ssl/certs/"
 
 # CHANGE back to true before committing
-normal["touchbistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true
+normal["touchbistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true 

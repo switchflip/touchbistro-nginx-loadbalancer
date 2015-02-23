@@ -58,6 +58,13 @@ describe service('nginx') do
     rest_client.get
   end
 
+  def get_404(server="127.0.0.1/no_page")
+    rest_client = RestClient::Resource.new("https://#{server}",
+      verify_ssl: OpenSSL::SSL::VERIFY_NONE
+    ) {|response, request, result| response }
+    rest_client.get
+  end
+
   describe "maintenance page is enabled" do
     it "should not respond with 500 over http or https" do
       maintenance_page(true)
@@ -67,11 +74,21 @@ describe service('nginx') do
       resp_http = http_get
       expect(resp.code.to_s[0]).not_to eq "5"
       expect(resp_http.to_s[0]).not_to eq "5"
+      maintenance_page(false)
+      run_deploy
+    end
+
+    it "should not return a 404 when visting a non-existent page" do
+      resp_404  = get_404
+      maintenance_page(true)
+      run_deploy
+
+      expect(resp_404.to_s[0]).not_to eq "4"
 
       maintenance_page(false)
       run_deploy
     end
-    
+
     it "should return content from touchbistro's maintenance page" do
       maintenance_page(true)
       run_deploy
