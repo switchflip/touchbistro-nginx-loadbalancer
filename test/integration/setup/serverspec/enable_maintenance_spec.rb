@@ -39,11 +39,6 @@ describe service('nginx') do
     `sudo chef-solo -c solo.rb -j test.json`
   end
 
-  def run_setup_and_deploy
-    Dir.chdir "/tmp/kitchen"
-    `sudo chef-solo -c solo.rb -j dna.json`
-  end
-
   def get(server="127.0.0.1")
     rest_client = RestClient::Resource.new("https://#{server}",
       verify_ssl: OpenSSL::SSL::VERIFY_NONE
@@ -66,45 +61,41 @@ describe service('nginx') do
   end
 
   describe "maintenance page is enabled" do
-    it "should not respond with 500 over http or https" do
+    before :all do
       maintenance_page(true)
       run_deploy
+    end
 
+    after :all do
+      maintenance_page(false)
+      run_deploy
+    end
+
+    it "should not respond with 500 over http or https" do
       resp      = get
       resp_http = http_get
       expect(resp.code.to_s[0]).not_to eq "5"
       expect(resp_http.to_s[0]).not_to eq "5"
-      maintenance_page(false)
-      run_deploy
     end
 
     it "should not return a 404 when visting a non-existent page" do
       resp_404  = get_404
-      maintenance_page(true)
-      run_deploy
-
       expect(resp_404.to_s[0]).not_to eq "4"
-
-      maintenance_page(false)
-      run_deploy
     end
 
     it "should return content from touchbistro's maintenance page" do
-      maintenance_page(true)
-      run_deploy
-
       resp = get
       expect(resp.body).to include('TouchBistro')
-
-      maintenance_page(false)
-      run_deploy
     end
   end
 
   describe "maintenance page is disabled" do
-    it "should not respond with 500 over http or https" do
-      run_setup_and_deploy
+    before :each do
+      maintenance_page(false)
+      run_deploy
+    end
 
+    it "should not respond with 500 over http or https" do
       resp      = get
       resp_http = http_get
       expect(resp.code.to_s[0]).not_to eq "5"
@@ -118,5 +109,4 @@ describe service('nginx') do
       expect(resp_http.body).to include('yahoo').or include('google')
     end
   end
-
 end
