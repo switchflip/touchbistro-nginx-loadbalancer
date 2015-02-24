@@ -29,9 +29,9 @@ http {
   gzip_disable          "msie6";
 
   <% if !node[:enable_maintenance_page] %>
-    # Virtual Host Configs
-    include               /etc/nginx/conf.d/*.conf;
-    include               /etc/nginx/sites-enabled/*;
+  # Virtual Host Configs
+  include               /etc/nginx/conf.d/*.conf;
+  include               /etc/nginx/sites-enabled/*;
   <% end %>
 
   # Timeout Settings

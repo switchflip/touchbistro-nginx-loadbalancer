@@ -8,7 +8,6 @@ maintenance_page_paths = %w[
   ]
 
 if node[:enable_maintenance_page]
-  # maintenance page enabled
   maintenance_page_paths.each do |path|
     directory path do
       owner 'root'
