@@ -41,18 +41,6 @@ ssl_crt File.join(loadbalancer_node[:ssl_crt_directory], "#{loadbalancer_node[:d
   key    deploy[:ssl_certificate_key]
 end
 
-file '/etc/nginx/nginx.conf' do
-  action :delete
-end
-
-template '/etc/nginx/nginx.conf' do
-  source 'nginx.conf.erb'
-  owner  'root'
-  group  'root'
-  mode   '0744'
-  variables :user => loadbalancer_node[:nginx_user], :worker => node[:cpu][:total]
-end
-
 bash 'create DH param key' do
   cwd   '/etc/nginx/ssl'
   user  'root'

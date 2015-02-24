@@ -25,4 +25,5 @@ key             = node[:custom_env][deployment_name][:NEW_RELIC_LICENSE_KEY]
 default["newrelic-sysmond"]["license_key"]              = key
 default["newrelic-sysmond"]["ssl_ca_path"]              = "/etc/ssl/certs/"
 
-default["touchbistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true
+# CHANGE back to true before committing
+normal["touchbistro_nginx_loadbalancer"]["enable_newrelic_sysmond"] = true
