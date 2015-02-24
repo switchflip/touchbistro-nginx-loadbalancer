@@ -90,9 +90,11 @@ describe service('nginx') do
   end
 
   describe "maintenance page is disabled" do
-    before :each do
-      maintenance_page(false)
-      run_deploy
+    before :all do
+      [true, false].each do |maintenance_enabled|
+         maintenance_page maintenance_enabled
+         run_deploy
+      end
     end
 
     it "should not respond with 500 over http or https" do
