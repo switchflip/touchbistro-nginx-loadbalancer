@@ -32,20 +32,9 @@ template '/etc/nginx/nginx.conf' do
   variables :directory => loadbalancer_node[:ssl_crt_directory],
             :file_name => loadbalancer_node[:domain_name],
             :user => loadbalancer_node[:nginx_user], 
-            :worker => node[:cpu][:total]
+            :worker => node[:cpu][:total],
+            :servers => loadbalancer_node[:upstream]
 end
-
-template '/etc/nginx/sites-enabled/default' do
-  source    'default.erb'
-  owner     'root'
-  group     'root'
-  mode      '0744'
-  variables :servers => loadbalancer_node[:upstream], 
-            :directory => loadbalancer_node[:ssl_crt_directory],
-            :file_name => loadbalancer_node[:domain_name]
-  action    :create
-end
-
 
 service 'nginx' do
   provider Chef::Provider::Service::Upstart
