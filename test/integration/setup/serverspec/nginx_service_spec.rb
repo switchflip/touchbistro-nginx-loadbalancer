@@ -12,7 +12,7 @@ describe service('nginx') do
   end
 
   before :each do
-    @conf_path      = '/etc/nginx/sites-enabled/default'
+    @conf_path      = '/etc/nginx/nginx.conf'
     @contents       = File.read(@conf_path)
     @failing_server = "server 127.0.0.1:23234"
     @working_server = "server amazon.ca:443"

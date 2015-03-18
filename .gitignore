@@ -5,6 +5,7 @@
 .*.sw[a-z]
 *.un~
 pkg/
+.ruby-version
 
 # Berkshelf
 .vagrant
