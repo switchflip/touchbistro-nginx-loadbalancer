@@ -70,28 +70,36 @@ http {
       ssl_stapling_verify        on;
       ssl_trusted_certificate    /etc/ssl/private/ca-certs.pem;
       resolver                   8.8.8.8 8.8.4.4;
-  <% if !node[:enable_maintenance_page] %>
-    location / {
-      proxy_pass                https://backend;
-      proxy_next_upstream       http_504 http_503 http_502 http_500 error timeout;
-      proxy_ssl_session_reuse   off;
-      proxy_set_header          Host $http_host;
-      proxy_set_header          X-Real-IP $remote_addr;
-      proxy_set_header          X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header          X-Forwarded-Proto $scheme;
-      # set the queue start header so that the time spent waiting in the
-      # queue for a unicorn worker can be tracked by NewRelic
-      proxy_set_header          X-Queue-Start "t=${msec}";
-    }
-  <% end %>
 
-  <% if node[:enable_maintenance_page] %>
+    # Normal operations defaults to this setting
+
+    <% if !node[:enable_maintenance_page] %>
       location / {
-        root   /var/www/cloud.touchbistro.com/maintenance;
-        index  index.html index.htm;
-        recursive_error_pages on;
-        error_page 505 504 503 502 501 500 408 404 403 402 401 400 /index.html;
-    }
-  <% end %>
+        proxy_pass                     https://backend;
+        # proxy_ssl_verify               on;
+        # proxy_ssl_trusted_certificate  <%= @directory %>/<%= @file_name %>.crt;
+        proxy_next_upstream            http_504 http_503 http_502 http_500 error timeout;
+        proxy_ssl_session_reuse        off;
+        proxy_set_header               Host $http_host;
+        proxy_set_header               X-Real-IP $remote_addr;
+        proxy_set_header               X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header               X-Forwarded-Proto $scheme;
+        # set the queue start header so that the time spent waiting in the
+        # queue for a unicorn worker can be tracked by NewRelic
+        proxy_set_header               X-Queue-Start "t=${msec}";
+      }
+    <% end %>
+
+    # During matanience this setting is enabled, which will cause all traffic to
+    # cloud.touchbsito.com to be redirected to this page.
+
+    <% if node[:enable_maintenance_page] %>
+        location / {
+          root   /var/www/cloud.touchbistro.com/maintenance;
+          index  index.html index.htm;
+          recursive_error_pages on;
+          error_page 505 504 503 502 501 500 408 404 403 402 401 400 /index.html;
+      }
+    <% end %>
   }
 }
