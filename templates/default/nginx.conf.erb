@@ -74,6 +74,8 @@ http {
     location / {
       proxy_pass                https://backend;
       proxy_next_upstream       http_504 http_503 http_502 http_500 error timeout;
+      # proxy_ssl_verify               on;
+      # proxy_ssl_trusted_certificate  <%= @directory %>/<%= @file_name %>.crt;
       proxy_ssl_session_reuse   off;
       proxy_set_header          Host $http_host;
       proxy_set_header          X-Real-IP $remote_addr;
