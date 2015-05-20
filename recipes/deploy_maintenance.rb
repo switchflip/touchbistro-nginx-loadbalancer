@@ -1,2 +1,2 @@
-node[:enable_maintenance_page] = true
+node.override[:enable_maintenance_page] = true
 include_recipe "touchbistro-nginx-loadbalancer::deploy"
